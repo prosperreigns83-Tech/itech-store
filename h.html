@@ -1,0 +1,299 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITECH Products</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{background:#111;color:white;font-family:'Poppins',sans-serif;margin:0;padding:0;}
+header{background:linear-gradient(90deg,#8B0000,#B22222);padding:20px 8%;display:flex;justify-content:space-between;align-items:center;}
+.logo{font-size:26px;font-weight:700;color:gold;}
+nav a{color:white;margin-left:20px;text-decoration:none;}
+.container{padding:40px 8%;}
+h1{color:gold;text-align:center;margin-bottom:30px;}
+.categories{display:flex;justify-content:center;gap:15px;margin-bottom:30px;flex-wrap:wrap;}
+.categories button{padding:10px 20px;border:none;border-radius:25px;background:gold;color:#111;font-weight:600;cursor:pointer;}
+.categories button:hover{background:#ffcc00;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;}
+.card{background:#1a1a1a;padding:20px;border-radius:15px;transition:0.3s;}
+.card:hover{transform:translateY(-8px);}
+.card img{width:100%;border-radius:10px;cursor:pointer;}
+.card h3{margin:15px 0 5px;color:gold;}
+.price{margin-bottom:10px;font-weight:600;}
+button.add-cart{background:gold;color:#111;border:none;padding:10px 20px;cursor:pointer;border-radius:25px;font-weight:600;}
+button.add-cart:hover{background:#ffcc00;}
+
+/* Cart */
+.cart{position:fixed;right:-400px;top:0;width:350px;height:100%;background:#1a1a1a;padding:20px;transition:0.4s;overflow-y:auto;z-index:2000;}
+.cart.active{right:0;}
+.cart h2{color:gold;margin-bottom:20px;}
+.cart-item{margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:10px;}
+.total{margin-top:20px;font-weight:700;}
+.checkout{margin-top:20px;width:100%;}
+.close-btn{cursor:pointer;color:red;margin-bottom:10px;}
+
+/* Modal */
+#productModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:3000;}
+#productModal > div{background:#111; padding:30px; border-radius:15px; max-width:400px; width:90%; text-align:center; position:relative;}
+#productModal span{position:absolute; top:10px; right:15px; cursor:pointer; color:red; font-size:20px;}
+#productModal img{width:100%; border-radius:10px; margin-bottom:15px;}
+#productModal h2{color:gold; margin-bottom:10px;}
+#productModal p{margin-bottom:10px;}
+
+@media(max-width:768px){.products{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ITECH</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<div class="container">
+<h1>Our Products</h1>
+
+<!-- Category Buttons -->
+<div class="categories">
+<button onclick="filterProducts('all')">All</button>
+<button onclick="filterProducts('fan')">Fans</button>
+<button onclick="filterProducts('light')">Lights</button>
+<button onclick="filterProducts('laptop')">Laptops</button>
+<button onclick="filterProducts('mp3')">MP3s</button>
+</div>
+
+<!-- Products Grid -->
+<div class="products" id="products"></div>
+
+<!-- Cart -->
+<div class="cart" id="cart">
+<div class="close-btn" onclick="toggleCart()">Close ✖</div>
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="total">Total: ₦<span id="totalPrice">0</span></div>
+<button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+</div>
+
+<!-- Product Modal -->
+<div id="productModal">
+  <div>
+    <span onclick="closeModal()">✖</span>
+    <img id="modalImg" src="" alt="">
+    <h2 id="modalName"></h2>
+    <p id="modalDesc"></p>
+    <p id="modalPrice"></p>
+    <button onclick="addToCartModal()">Add to Cart</button>
+  </div>
+</div>
+
+<!-- <script>
+// Products Data
+let productList = [
+{name:"Cooling Fan", price:5000, category:"fan", img:"images/fan.png", desc:"High speed cooling fan for home or office."},
+{name:"LED Light", price:2000, category:"light", img:"images/light.png", desc:"Energy saving LED light with long lifespan."},
+{name:"Laptop Pro", price:120000, category:"laptop", img:"images/laptop.png", desc:"High performance laptop for work and gaming."},
+{name:"MP3 Player", price:8000, category:"mp3", img:"images/mp3.png", desc:"Portable MP3 player with high quality sound."},
+{name:"Desk Fan", price:3500, category:"fan", img:"images/fan2.png", desc:"Compact desk fan for personal use."},
+{name:"Smart Lamp", price:3000, category:"light", img:"images/light2.png", desc:"Smart lamp with adjustable brightness."}
+];
+
+let cart = [];
+let currentCategory = 'all';
+let currentModalProductIndex = null;
+
+// Display Products
+function displayProducts(){
+  let container = document.getElementById('products');
+  container.innerHTML = "";
+  productList.forEach((product,index)=>{
+    if(currentCategory==='all' || product.category===currentCategory){
+      container.innerHTML += `
+      <div class="card">
+        <img src="${product.img}" alt="${product.name}" onclick="openModal(${index})">
+        <h3>${product.name}</h3>
+        <p class="price">₦${product.price}</p>
+        <button class="add-cart" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
+      </div>
+      `;
+    }
+  });
+}
+displayProducts();
+
+// Filter Products by Category
+function filterProducts(category){
+  currentCategory = category;
+  displayProducts();
+}
+
+// Cart Functions
+function addToCart(name,price){
+  cart.push({name,price});
+  updateCart();
+}
+
+function updateCart(){
+  let cartItems = document.getElementById("cartItems"); 
+  let total=0; 
+  cartItems.innerHTML="";
+  cart.forEach((item,index)=>{
+    total+=item.price; 
+    cartItems.innerHTML+=`<div class="cart-item">${item.name} - ₦${item.price} <button onclick="removeItem(${index})">Remove</button></div>`;
+  });
+  document.getElementById("totalPrice").innerText=total;
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  updateCart();
+}
+
+function toggleCart(){
+  document.getElementById("cart").classList.toggle("active");
+}
+
+function checkout(){
+  if(cart.length===0){alert("Cart is empty!"); return;}
+  let message="Hello ITECH, I want to order:%0A"; 
+  let total=0; 
+  cart.forEach(item=>{
+    message+=`- ${item.name} (₦${item.price})%0A`; 
+    total+=item.price;
+  }); 
+  message+=`%0ATotal: ₦${total}`;
+  window.open(`https://wa.me/234XXXXXXXXXX?text=${message}`);
+}
+
+// Modal Functions
+function openModal(index){
+  currentModalProductIndex = index; 
+  let product = productList[index]; 
+  document.getElementById("modalImg").src = product.img; 
+  document.getElementById("modalName").innerText = product.name; 
+  document.getElementById("modalDesc").innerText = product.desc; 
+  document.getElementById("modalPrice").innerText = "₦"+product.price; 
+  document.getElementById("productModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("productModal").style.display="none";
+}
+
+function addToCartModal(){
+  if(currentModalProductIndex!==null){
+    let product = productList[currentModalProductIndex]; 
+    addToCart(product.name,product.price); 
+    closeModal();
+  }
+}
+ -->
+
+
+<script>
+// ======= Product List =======
+let productList = [
+  {name:"Cooling Fan", price:10000, category:"fan", img:"images/fan.png", desc:"High speed cooling fan for home or office."},
+  {name:"LED Light", price:2000, category:"light", img:"images/light.png", desc:"Energy saving LED light with long lifespan."},
+  {name:"Laptop Pro", price:120000, category:"laptop", img:"images/laptop.png", desc:"High performance laptop for work and gaming."},
+  {name:"MP3 Player", price:8000, category:"mp3", img:"images/mp3.png", desc:"Portable MP3 player with high quality sound."}
+];
+
+let cart = [];
+let currentCategory = 'all';
+let currentModalProductIndex = null;
+
+// ======= Display Products =======
+function displayProducts(){
+  let container = document.getElementById('products');
+  container.innerHTML = "";
+  productList.forEach((product,index)=>{
+    if(currentCategory==='all' || product.category===currentCategory){
+      container.innerHTML += `
+      <div class="card">
+        <img src="${product.img}" alt="${product.name}" onclick="openModal(${index})">
+        <h3>${product.name}</h3>
+        <p class="price">₦${product.price}</p>
+        <button class="add-cart" onclick="addToCart('${product.name}',${product.price})">Add to Cart</button>
+      </div>
+      `;
+    }
+  });
+}
+displayProducts();
+
+// ======= Filter by Category =======
+function filterProducts(category){
+  currentCategory = category;
+  displayProducts();
+}
+
+// ======= Cart Functions =======
+function addToCart(name,price){
+  cart.push({name,price});
+  updateCart();
+}
+
+function updateCart(){
+  let cartItems = document.getElementById("cartItems"); 
+  let total=0; 
+  cartItems.innerHTML="";
+  cart.forEach((item,index)=>{
+    total+=item.price; 
+    cartItems.innerHTML+=`<div class="cart-item">${item.name} - ₦${item.price} <button onclick="removeItem(${index})">Remove</button></div>`;
+  });
+  document.getElementById("totalPrice").innerText=total;
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  updateCart();
+}
+
+function toggleCart(){
+  document.getElementById("cart").classList.toggle("active");
+}
+
+function checkout(){
+  if(cart.length===0){alert("Cart is empty!"); return;}
+  let message="Hello ITECH, I want to order:%0A"; 
+  let total=0; 
+  cart.forEach(item=>{
+    message+=`- ${item.name} (₦${item.price})%0A`; 
+    total+=item.price;
+  }); 
+  message+=`%0ATotal: ₦${total}`;
+  window.open(`https://wa.me/234XXXXXXXXXX?text=${message}`);
+}
+
+// ======= Modal Functions =======
+function openModal(index){
+  currentModalProductIndex = index; 
+  let product = productList[index]; 
+  document.getElementById("modalImg").src = product.img; 
+  document.getElementById("modalName").innerText = product.name; 
+  document.getElementById("modalDesc").innerText = product.desc; 
+  document.getElementById("modalPrice").innerText = "₦"+product.price; 
+  document.getElementById("productModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("productModal").style.display="none";
+}
+
+function addToCartModal(){
+  if(currentModalProductIndex!==null){
+    let product = productList[currentModalProductIndex]; 
+    addToCart(product.name,product.price); 
+    closeModal();
+  }
+}
+</script>
+</script>
+
+</body>
+</html> -->
