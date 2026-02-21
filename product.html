@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITECH | Premium Tech Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#111;
+color:white;
+}
+
+header{
+background:linear-gradient(90deg,#8B0000,#B22222);
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:26px;
+font-weight:700;
+color:gold;
+}
+
+.cart-icon{
+cursor:pointer;
+font-weight:600;
+}
+
+.cart-count{
+background:gold;
+color:#111;
+padding:3px 8px;
+border-radius:50%;
+margin-left:5px;
+}
+
+.products{
+padding:60px 8%;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+}
+
+.card{
+background:#1a1a1a;
+padding:20px;
+border-radius:15px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+}
+
+.card h3{
+margin:15px 0 5px;
+color:gold;
+}
+
+.price{
+margin-bottom:10px;
+font-weight:600;
+}
+
+button{
+background:gold;
+color:#111;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+border-radius:25px;
+font-weight:600;
+}
+
+button:hover{
+background:#ffcc00;
+}
+
+.cart{
+position:fixed;
+right:-400px;
+top:0;
+width:350px;
+height:100%;
+background:#1a1a1a;
+padding:20px;
+transition:0.4s;
+overflow-y:auto;
+z-index:2000;
+}
+
+.cart.active{
+right:0;
+}
+
+.cart h2{
+color:gold;
+margin-bottom:20px;
+}
+
+.cart-item{
+margin-bottom:15px;
+border-bottom:1px solid #333;
+padding-bottom:10px;
+}
+
+.total{
+margin-top:20px;
+font-weight:700;
+}
+
+.checkout{
+margin-top:20px;
+width:100%;
+}
+
+.close-btn{
+cursor:pointer;
+color:red;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">ITECH</div>
+<div class="cart-icon" onclick="toggleCart()">
+Cart 🛒 <span class="cart-count" id="cartCount">0</span>
+</div>
+</header>
+
+<section class="products">
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3">
+<h3>ICAL Calculator</h3>
+<p class="price">₦5,000</p>
+<button onclick="addToCart('ICAL Calculator',5000)">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c">
+<h3>Programming Course</h3>
+<p class="price">₦15,000</p>
+<button onclick="addToCart('Programming Course',15000)">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
+<h3>Laptop Setup Guide</h3>
+<p class="price">₦7,000</p>
+<button onclick="addToCart('Laptop Setup Guide',7000)">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+<h3>Website Design Service</h3>
+<p class="price">₦25,000</p>
+<button onclick="addToCart('Website Design Service',25000)">Add to Cart</button>
+</div>
+
+</section>
+
+<div class="cart" id="cart">
+<div class="close-btn" onclick="toggleCart()">Close ✖</div>
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="total">Total: ₦<span id="totalPrice">0</span></div>
+<button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+</div>
+
+<script>
+
+let cart = [];
+
+function addToCart(name, price){
+cart.push({name, price});
+updateCart();
+}
+
+function updateCart(){
+let cartItems = document.getElementById("cartItems");
+let total = 0;
+cartItems.innerHTML = "";
+
+cart.forEach((item,index)=>{
+total += item.price;
+cartItems.innerHTML += `
+<div class="cart-item">
+${item.name} - ₦${item.price}
+<button onclick="removeItem(${index})">Remove</button>
+</div>
+`;
+});
+
+document.getElementById("totalPrice").innerText = total;
+document.getElementById("cartCount").innerText = cart.length;
+}
+
+function removeItem(index){
+cart.splice(index,1);
+updateCart();
+}
+
+function toggleCart(){
+document.getElementById("cart").classList.toggle("active");
+}
+
+function checkout(){
+if(cart.length === 0){
+alert("Cart is empty!");
+return;
+}
+
+let message = "Hello ITECH, I want to order:%0A";
+let total = 0;
+
+cart.forEach(item=>{
+message += `- ${item.name} (₦${item.price})%0A`;
+total += item.price;
+});
+
+message += `%0ATotal: ₦${total}`;
+
+window.open(`https://wa.me/2349162249670?text=${message}`);
+}
+
+</script>
+
+</body>
+</html>
