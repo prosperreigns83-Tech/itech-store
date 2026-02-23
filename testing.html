@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITECH | Premium Tech Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#111;color:white;}
+header{background:linear-gradient(90deg,#8B0000,#B22222);padding:20px 8%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;}
+.logo{font-size:26px;font-weight:700;color:gold;}
+.cart-icon{cursor:pointer;font-weight:600;}
+.cart-count{background:gold;color:#111;padding:3px 8px;border-radius:50%;margin-left:5px;}
+.categories{display:flex;justify-content:center;gap:15px;margin:30px 0;flex-wrap:wrap;}
+.categories button{padding:10px 20px;border:none;border-radius:25px;background:gold;color:#111;font-weight:600;cursor:pointer;}
+.categories button:hover{background:#ffcc00;}
+.products{padding:0 8%;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;}
+.card{background:#1a1a1a;padding:20px;border-radius:15px;transition:0.3s;}
+.card:hover{transform:translateY(-8px);}
+.card img{width:100%;border-radius:10px;cursor:pointer;}
+.card h3{margin:15px 0 5px;color:gold;}
+.price{margin-bottom:10px;font-weight:600;}
+button{background:gold;color:#111;border:none;padding:10px 20px;cursor:pointer;border-radius:25px;font-weight:600;}
+button:hover{background:#ffcc00;}
+.cart{position:fixed;right:-400px;top:0;width:350px;height:100%;background:#1a1a1a;padding:20px;transition:0.4s;overflow-y:auto;z-index:2000;}
+.cart.active{right:0;}
+.cart h2{color:gold;margin-bottom:20px;}
+.cart-item{margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:10px;}
+.total{margin-top:20px;font-weight:700;}
+.checkout{margin-top:20px;width:100%;}
+.close-btn{cursor:pointer;color:red;margin-bottom:10px;}
+#productModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:3000;}
+#productModal > div{background:#111;padding:30px;border-radius:15px;max-width:400px;width:90%;text-align:center;position:relative;}
+#productModal span{position:absolute;top:10px;right:15px;cursor:pointer;color:red;font-size:20px;}
+#productModal img{width:100%;border-radius:10px;margin-bottom:15px;}
+#productModal h2{color:gold;margin-bottom:10px;}
+#productModal p{margin-bottom:10px;}
+@media(max-width:768px){.products{grid-template-columns:1fr;}}
+nav a{color:white;margin-left:20px;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">ITECH</div>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+<div class="cart-icon" onclick="toggleCart()">Cart 🛒 <span class="cart-count" id="cartCount">0</span></div>
+</header>
+
+<!-- Categories -->
+     <div class="categories">
+    <div class="menu-toggle">☰</div>
+    <nav class="nav-links">
+     <button onclick="filterProducts('all')">All</button>
+     <button onclick="filterProducts('fan')">Fans</button>
+    <button onclick="filterProducts('light')">Lights</button>
+    <button onclick="filterProducts('laptop')">Laptops</button>
+     <button onclick="filterProducts('mp3')">MP3s</button>
+    </nav>
+  </div>
+    
+
+
+<section class="products" id="products">
+<!-- Products dynamically loaded here -->
+</section>
+
+<!-- Cart -->
+<div class="cart" id="cart">
+<div class="close-btn" onclick="toggleCart()">Close ✖</div>
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="total">Total: ₦<span id="totalPrice">0</span></div>
+<button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+</div>
+
+<!-- Product Modal -->
+<div id="productModal">
+  <div>
+    <span onclick="closeModal()">✖</span>
+    <img id="modalImg" src="" alt="">
+    <h2 id="modalName"></h2>
+    <p id="modalDesc"></p>
+    <p id="modalPrice"></p>
+    <button onclick="addToCartModal()">Add to Cart</button>
+  </div>
+</div>
+
+<script>
+// ======= Products =======
+// Just fill name, price, category, description, and image file name in /images
+let productListData = [
+{name:"Laptop", price:500000, category:"laptop", imgFile:"lap2.png", desc:"Good Laptop."},
+{name:"Speaker", price:40000, category:"mp3", imgFile:"mp31.jpg", desc:"Good sound."},
+{name:"Laptop", price:700000, category:"laptop", imgFile:"lap1.png", desc:""},
+{name:"Laptop", price:250000, category:"laptop", imgFile:"lap6.jpg", desc:"Professional website design."},
+{name:"fan", price:10000, category:"fan", imgFile:"fan.png", desc:"cooling fast."},
+{name:"Fast fan", price:12000, category:"fan", imgFile:"fan1.png", desc:"Good for hot seasons"},
+
+{name:"Online courses", price:150000, category:"laptop", imgFile:"pro1.jpg", desc:"learn programming"},
+
+{name:"Online courses", price:150000, category:"laptop", imgFile:"pro2.jpg", desc:"learn programming"},
+
+
+{name:"Solar Light", price:12000, category:"light", imgFile:"light2.png", desc:"Solar rechargable light."},
+{name:"Laptop", price:250000, category:"laptop", imgFile:"lap1.png", desc:"Awesome new product."}
+];
+
+
+// Automatically build productList with image paths
+let productList = productListData.map(p=>{
+  return {...p, img:"images/"+p.imgFile};
+});
+
+let cart=[];
+let currentCategory='all';
+let currentModalProductIndex=null;
+
+// ===== Display Products =====
+function displayProducts(){
+  let container=document.getElementById('products'); container.innerHTML="";
+  productList.forEach((p,index)=>{
+    if(currentCategory==='all' || p.category===currentCategory){
+      container.innerHTML+=`
+      <div class="card">
+        <img src="${p.img}" alt="${p.name}" onclick="openModal(${index})">
+        <h3>${p.name}</h3>
+        <p class="price">₦${p.price}</p>
+        <button onclick="addToCart('${p.name}',${p.price})">Add to Cart</button>
+      </div>
+      `;
+    }
+  });
+}
+displayProducts();
+
+// ===== Filter =====
+function filterProducts(category){currentCategory=category; displayProducts();}
+
+// ===== Cart =====
+function addToCart(name,price){cart.push({name,price}); updateCart();}
+function updateCart(){
+  let ci=document.getElementById("cartItems"); let total=0; ci.innerHTML="";
+  cart.forEach((item,i)=>{total+=item.price; ci.innerHTML+=`<div class="cart-item">${item.name} - ₦${item.price} <button onclick="removeItem(${i})">Remove</button></div>`;});
+  document.getElementById("totalPrice").innerText=total;
+  document.getElementById("cartCount").innerText=cart.length;
+}
+function removeItem(i){cart.splice(i,1); updateCart();}
+function toggleCart(){document.getElementById("cart").classList.toggle("active");}
+function checkout(){
+  if(cart.length===0){alert("Cart is empty!"); return;}
+  let message="Hello ITECH, I want to order:%0A"; let total=0;
+  cart.forEach(item=>{message+=`- ${item.name} (₦${item.price})%0A`; total+=item.price;});
+  message+=`%0ATotal: ₦${total}`;
+  window.open(`https://wa.me/2349162249670?text=${message}`);
+}
+
+// ===== Modal =====
+function openModal(index){
+  currentModalProductIndex=index;
+  let p=productList[index];
+  document.getElementById("modalImg").src=p.img;
+  document.getElementById("modalName").innerText=p.name;
+  document.getElementById("modalDesc").innerText=p.desc;
+  document.getElementById("modalPrice").innerText="₦"+p.price;
+  document.getElementById("productModal").style.display="flex";
+}
+function closeModal(){document.getElementById("productModal").style.display="none";}
+function addToCartModal(){if(currentModalProductIndex!==null){let p=productList[currentModalProductIndex]; addToCart(p.name,p.price); closeModal();}}
+
+
+
+const toggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+toggle.addEventListener('click', () => {
+  navLinks.classList.toggle('show');
+});
+
+</script>
+
+</body>
+</html>
